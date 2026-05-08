@@ -3,20 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#12000b" />
   <title>What's wrong, Maria?</title>
 
   <style>
     :root {
-      --bg-1: #190010;
-      --bg-2: #4a002b;
-      --bg-3: #86004a;
-      --panel: rgba(40, 0, 24, 0.58);
-      --panel-border: rgba(255, 190, 225, 0.14);
-      --text-main: #ffe2f3;
-      --text-soft: rgba(255, 230, 243, 0.84);
-      --accent-1: #ff5bbd;
-      --accent-2: #ff8fd6;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --bg-a: #080006;
+      --bg-b: #2b001d;
+      --bg-c: #7c004a;
+      --glass: rgba(28, 0, 19, 0.68);
+      --glass-soft: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 217, 238, 0.16);
+      --text: #fff1fa;
+      --muted: rgba(255, 237, 247, 0.76);
+      --muted-2: rgba(255, 237, 247, 0.55);
+      --pink: #ff4db7;
+      --pink-2: #ff94d8;
+      --pink-3: #ffc4ea;
+      --shadow: 0 34px 110px rgba(0, 0, 0, 0.52);
+      --radius-xl: 34px;
+      --radius-lg: 26px;
     }
 
     * {
@@ -25,31 +31,39 @@
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
+      scroll-behavior: smooth;
     }
 
     body {
       width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      font-family: Arial, Helvetica, sans-serif;
-      color: white;
+      min-height: 100vh;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
       background:
-        radial-gradient(circle at top center, rgba(255, 90, 180, 0.28), transparent 28%),
-        radial-gradient(circle at 15% 80%, rgba(255, 80, 140, 0.16), transparent 24%),
-        radial-gradient(circle at 85% 20%, rgba(255, 120, 200, 0.14), transparent 22%),
-        linear-gradient(180deg, var(--bg-3) 0%, var(--bg-2) 42%, var(--bg-1) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
+        radial-gradient(circle at 20% 20%, rgba(255, 90, 188, 0.20), transparent 28%),
+        radial-gradient(circle at 85% 10%, rgba(255, 176, 224, 0.13), transparent 26%),
+        radial-gradient(circle at 70% 85%, rgba(255, 70, 160, 0.16), transparent 30%),
+        linear-gradient(135deg, var(--bg-a), var(--bg-b) 48%, var(--bg-c));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: radial-gradient(circle at center, black 0%, transparent 80%);
     }
 
     .bg-hearts {
-      position: absolute;
+      position: fixed;
       inset: 0;
       overflow: hidden;
       pointer-events: none;
@@ -58,117 +72,217 @@
 
     .bg-hearts span {
       position: absolute;
-      bottom: -60px;
-      color: rgba(255, 185, 225, 0.18);
-      text-shadow: 0 0 12px rgba(255, 90, 180, 0.35);
-      animation: rise linear infinite;
+      bottom: -80px;
+      color: rgba(255, 205, 236, 0.22);
+      text-shadow: 0 0 18px rgba(255, 90, 188, 0.45);
+      animation: heartRise linear infinite;
       user-select: none;
+      will-change: transform, opacity;
     }
 
-    @keyframes rise {
-      0% {
-        transform: translateY(0) scale(0.75) rotate(0deg);
-        opacity: 0;
-      }
-
-      18% {
-        opacity: 1;
-      }
-
-      100% {
-        transform: translateY(-120vh) scale(1.35) rotate(10deg);
-        opacity: 0;
-      }
+    @keyframes heartRise {
+      0% { transform: translateY(0) rotate(0deg) scale(0.7); opacity: 0; }
+      12% { opacity: 1; }
+      100% { transform: translateY(-120vh) rotate(22deg) scale(1.35); opacity: 0; }
     }
 
-    .app {
+    .page {
       position: relative;
-      z-index: 2;
-      width: min(94vw, 1000px);
-      height: 100vh;
-      padding: 10px;
+      z-index: 1;
+      min-height: 100svh;
+      width: 100%;
+      display: grid;
+      place-items: center;
+      padding: clamp(14px, 2.4vw, 34px);
+    }
+
+    .shell {
+      width: min(1180px, 100%);
+      min-height: min(720px, calc(100svh - 40px));
+      max-height: none;
+      display: grid;
+      grid-template-columns: 0.96fr 1.04fr;
+      overflow: hidden;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.08), transparent 28%, rgba(255,255,255,0.035)),
+        var(--glass);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .left,
+    .right {
+      position: relative;
+      min-width: 0;
+    }
+
+    .left {
+      padding: clamp(26px, 4vw, 58px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .right {
+      padding: clamp(18px, 3vw, 44px);
       display: flex;
       align-items: center;
       justify-content: center;
+      border-left: 1px solid rgba(255,255,255,0.08);
+      background: radial-gradient(circle at 50% 50%, rgba(255, 92, 190, 0.08), transparent 55%);
     }
 
-    .panel {
-      position: relative;
-      width: 100%;
-      max-height: calc(100vh - 20px);
-      background: var(--panel);
-      border: 1px solid var(--panel-border);
-      border-radius: 26px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      padding: 16px;
-      overflow: hidden;
-      isolation: isolate;
-    }
-
-    .panel::before {
-      content: "";
+    .topline {
       position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.06), transparent 22%, transparent 78%, rgba(255,255,255,0.04));
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .panel-header {
+      top: clamp(20px, 3vw, 38px);
+      left: clamp(26px, 4vw, 58px);
+      right: clamp(26px, 4vw, 58px);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .eyebrow {
+    .brand {
       letter-spacing: 0.22em;
       text-transform: uppercase;
       font-size: 12px;
-      color: rgba(255, 222, 241, 0.82);
+      color: var(--muted-2);
+      white-space: nowrap;
     }
 
-    .status {
+    .pill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: rgba(255, 235, 245, 0.88);
-      padding: 8px 12px;
+      gap: 9px;
+      padding: 10px 15px;
       border-radius: 999px;
-      font-size: 13px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.065);
+      color: rgba(255, 240, 248, 0.82);
+      font-size: 14px;
+      white-space: nowrap;
     }
 
-    .status-dot {
+    .dot {
       width: 8px;
       height: 8px;
-      border-radius: 50%;
-      background: #ff82cf;
-      box-shadow: 0 0 12px #ff82cf;
+      border-radius: 99px;
+      background: var(--pink-2);
+      box-shadow: 0 0 16px var(--pink-2);
     }
 
-    .scene {
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 56px;
+      color: var(--muted);
+      font-size: clamp(14px, 1.5vw, 16px);
+      letter-spacing: 0.02em;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 56px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--pink-3), transparent);
+    }
+
+    h1 {
+      font-size: clamp(48px, 7.2vw, 92px);
+      line-height: 0.94;
+      font-weight: 950;
+      letter-spacing: -0.065em;
+      text-wrap: balance;
+      max-width: 620px;
+      text-shadow:
+        0 0 16px rgba(255, 95, 190, 0.46),
+        0 18px 55px rgba(0, 0, 0, 0.40);
+    }
+
+    .subtitle {
+      max-width: 610px;
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.68;
+      min-height: 70px;
+    }
+
+    .message-card {
+      max-width: 650px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.065);
+      padding: 20px;
+      color: rgba(255, 241, 249, 0.86);
+      line-height: 1.72;
+      font-size: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .message-card strong {
+      color: var(--text);
+      font-weight: 850;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      outline: 0;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 850;
+      padding: 15px 22px;
+      border-radius: 999px;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      user-select: none;
+    }
+
+    button:hover { transform: translateY(-2px); }
+    button:active { transform: translateY(0) scale(0.99); }
+
+    .primary {
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-2));
+      box-shadow: 0 16px 36px rgba(255, 77, 183, 0.32);
+    }
+
+    .primary:hover { box-shadow: 0 20px 46px rgba(255, 77, 183, 0.48); }
+
+    .secondary {
+      color: var(--text);
+      background: rgba(255,255,255,0.065);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .visual-card {
+      width: min(100%, 560px);
+      aspect-ratio: 1 / 1;
+      max-height: min(560px, calc(100svh - 120px));
       position: relative;
-      width: 100%;
-      height: 300px;
-      border-radius: 22px;
+      border-radius: 32px;
       overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
       background:
-        radial-gradient(circle at center, rgba(255, 90, 180, 0.10), transparent 28%),
-        linear-gradient(180deg, rgba(56, 0, 34, 0.98), rgba(24, 0, 14, 0.98));
-      border: 1px solid rgba(255,255,255,0.06);
+        radial-gradient(circle at 50% 50%, rgba(255, 95, 190, 0.14), transparent 44%),
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025));
       box-shadow:
-        inset 0 0 30px rgba(255, 110, 190, 0.05),
-        0 10px 40px rgba(0, 0, 0, 0.18);
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 22px 70px rgba(0,0,0,0.34);
     }
 
-    #particleCanvas {
+    canvas {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -176,438 +290,510 @@
       display: block;
     }
 
-    .scene-glow {
+    .visual-glow {
       position: absolute;
-      width: 220px;
-      height: 220px;
+      inset: 16%;
       border-radius: 50%;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -56%);
-      background:
-        radial-gradient(circle, rgba(255, 110, 200, 0.18), rgba(255, 110, 200, 0.08), transparent 72%);
+      background: radial-gradient(circle, rgba(255, 111, 204, 0.20), transparent 68%);
       filter: blur(8px);
       pointer-events: none;
     }
 
-    .content {
-      padding: 14px 8px 4px;
-      text-align: center;
+    .corner-note {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: rgba(255, 241, 249, 0.48);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      pointer-events: none;
     }
 
-    .title {
-      min-height: 52px;
-      font-size: clamp(24px, 3.5vw, 44px);
-      font-weight: 800;
-      line-height: 1.1;
-      color: var(--text-main);
-      text-shadow:
-        0 0 14px rgba(255, 102, 194, 0.45),
-        0 0 28px rgba(255, 102, 194, 0.18);
-      margin-bottom: 6px;
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: 240ms ease;
+      padding: 13px 18px;
+      border-radius: 999px;
+      color: var(--text);
+      background: rgba(26, 0, 18, 0.76);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
     }
 
-    .subtitle {
-      min-height: 44px;
-      max-width: 760px;
-      margin: 0 auto;
-      font-size: clamp(14px, 1.5vw, 17px);
-      line-height: 1.6;
-      color: var(--text-soft);
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
-    .typing-caret::after {
+    .burst {
+      position: fixed;
+      z-index: 30;
+      pointer-events: none;
+      color: #ffd0ef;
+      text-shadow: 0 0 16px rgba(255, 82, 184, 0.88);
+      animation: burst 850ms ease forwards;
+      will-change: transform, opacity;
+    }
+
+    @keyframes burst {
+      0% { transform: translate(-50%, -50%) scale(0.55); opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) scale(1.55); opacity: 0; }
+    }
+
+    .typing::after {
       content: "";
       display: inline-block;
-      width: 2px;
-      height: 1.05em;
-      margin-left: 6px;
-      vertical-align: -0.12em;
-      background: rgba(255, 214, 236, 0.95);
-      animation: blink 900ms steps(1) infinite;
-    }
-
-    @keyframes blink {
-      50% {
-        opacity: 0;
-      }
-    }
-
-    .controls {
-      margin-top: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .btn {
-      border: none;
-      outline: none;
+      width: 4px;
+      height: 0.88em;
+      margin-left: 8px;
       border-radius: 999px;
-      padding: 14px 22px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 220ms ease;
-      user-select: none;
+      background: var(--pink-3);
+      box-shadow: 0 0 12px var(--pink-2);
+      animation: blink 850ms steps(1) infinite;
     }
 
-    .btn-primary {
-      color: white;
-      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-      box-shadow: 0 10px 28px rgba(255, 91, 189, 0.28);
-    }
+    @keyframes blink { 50% { opacity: 0; } }
 
-    .btn-secondary {
-      color: var(--text-main);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px) scale(1.02);
-    }
-
-    .btn-primary:hover {
-      box-shadow: 0 14px 32px rgba(255, 91, 189, 0.42);
-    }
-
-    @media (max-width: 768px) {
-      .app {
-        padding: 10px;
+    @media (max-width: 920px) {
+      .page {
+        display: block;
+        padding: 14px;
       }
 
-      .panel {
-        padding: 12px;
+      .shell {
+        min-height: auto;
+        grid-template-columns: 1fr;
       }
 
-      .panel-header {
-        justify-content: center;
-        text-align: center;
+      .right {
+        border-left: 0;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        padding-top: 8px;
       }
 
-      .scene {
-        height: 280px;
+      .left {
+        padding: 26px;
+        gap: 18px;
       }
 
-      .controls {
-        flex-direction: column;
+      .topline {
+        position: static;
+        margin-bottom: 24px;
       }
 
-      .btn {
+      .kicker {
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: clamp(42px, 13vw, 70px);
+      }
+
+      .visual-card {
         width: 100%;
+        max-height: none;
+        aspect-ratio: 16 / 10;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page { padding: 10px; }
+      .shell { border-radius: 24px; }
+      .left, .right { padding: 20px; }
+      .topline { align-items: flex-start; flex-direction: column; }
+      .brand { font-size: 11px; white-space: normal; }
+      .kicker::before { width: 34px; }
+      .message-card { font-size: 15px; padding: 16px; }
+      .actions { flex-direction: column; }
+      button { width: 100%; }
+      .visual-card { border-radius: 24px; aspect-ratio: 1 / 1; }
+      .corner-note { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="bg-hearts" id="bgHearts"></div>
+  <div class="bg-hearts" id="bgHearts" aria-hidden="true"></div>
 
-  <main class="app">
-    <section class="panel">
-      <div class="panel-header">
-        <div class="eyebrow">Interactive Emotional Message</div>
+  <main class="page">
+    <section class="shell" aria-label="Private emotional message">
+      <div class="left">
+        <div class="topline">
+          <div class="brand">Private emotional message</div>
+          <div class="pill"><span class="dot"></span><span id="pillName">Only for Maria</span></div>
+        </div>
 
-        <div class="status">
-          <span class="status-dot"></span>
-          <span>Live particle scene</span>
+        <div class="kicker" id="kicker">A soft message, not pressure</div>
+
+        <h1 id="title">What's wrong, Maria?</h1>
+
+        <p class="subtitle" id="subtitle">
+          You do not have to explain everything now. I just want to know that you are okay.
+        </p>
+
+        <div class="message-card" id="messageBox">
+          <strong>Read this slowly:</strong><br />
+          I am not here to force you to talk. I only want you to know that I noticed your silence, and I care about it. When you are ready, send me one word. I will understand.
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="nextBtn">Next feeling ✨</button>
+          <button class="secondary" id="heartBtn">Send a heart ♡</button>
+          <button class="secondary" id="copyBtn">Copy message</button>
         </div>
       </div>
 
-      <div class="scene">
-        <canvas id="particleCanvas"></canvas>
-        <div class="scene-glow"></div>
-      </div>
-
-      <div class="content">
-        <h1 class="title typing-caret" id="title"></h1>
-        <p class="subtitle" id="subtitle"></p>
-
-        <div class="controls">
-          <button class="btn btn-primary" id="nextMessageBtn">Next Message 💗</button>
-          <button class="btn btn-secondary" id="changeShapeBtn">Change Symbol ✨</button>
+      <div class="right">
+        <div class="visual-card">
+          <canvas id="particleCanvas"></canvas>
+          <div class="visual-glow"></div>
+          <div class="corner-note"><span>particles</span><span>feelings</span></div>
         </div>
       </div>
     </section>
   </main>
 
+  <div class="toast" id="toast">Copied</div>
+
   <script>
+    "use strict";
+
     const recipientName = "Maria";
 
     const messages = [
       {
+        symbol: "?",
+        kicker: "A soft message, not pressure",
         title: `What's wrong, ${recipientName}?`,
-        subtitle: "You can talk to me. I'm here for you, and I will listen carefully."
+        subtitle: "You do not have to explain everything now. I just want to know that you are okay.",
+        box: "I am not here to force you to talk. I only want you to know that I noticed your silence, and I care about it. When you are ready, send me one word. I will understand."
       },
       {
+        symbol: "♡",
+        kicker: "No judgment, only care",
         title: `Are you okay, ${recipientName}?`,
-        subtitle: "If something is hurting you, you don't have to carry it alone."
+        subtitle: "If something is hurting you, you do not have to carry it alone.",
+        box: "You can take your time. I will not rush you, and I will not judge you. I only want to be close enough to understand what you are feeling."
       },
       {
+        symbol: "!",
+        kicker: "One honest word is enough",
         title: `Talk to me, ${recipientName}.`,
-        subtitle: "Sometimes one honest message can make everything a little lighter."
+        subtitle: "Sometimes a small honest message can make everything feel lighter.",
+        box: "You do not need a perfect explanation. Even one word is enough. I care about your silence because you matter to me."
       },
       {
-        title: "I'm here for you.",
-        subtitle: "I may not fix everything, but I can stay, listen, and understand."
+        symbol: "♡",
+        kicker: "I am still here",
+        title: "I am here for you.",
+        subtitle: "I may not fix everything, but I can listen, stay, and understand.",
+        box: "I do not want to be another pressure in your life. I want to be a safe place, even for a short message, even for silence."
       },
       {
+        symbol: "?",
+        kicker: "You matter more than you think",
         title: `You matter, ${recipientName}.`,
-        subtitle: "No pressure. No judgment. Just honesty, care, and real support."
+        subtitle: "No pressure. No judgment. Just honesty, care, and real support.",
+        box: "Whatever is happening, I hope you remember this: your feelings are important, your silence is noticed, and you are not alone."
       }
     ];
 
-    const shapes = ["?", "♡", "!"];
-    let currentShapeIndex = 0;
-    let currentMessageIndex = 0;
-
+    const pillName = document.getElementById("pillName");
     const bgHearts = document.getElementById("bgHearts");
-
-    function createFloatingHearts(count = 36) {
-      for (let i = 0; i < count; i++) {
-        const heart = document.createElement("span");
-        heart.textContent = "♡";
-        heart.style.left = `${Math.random() * 100}vw`;
-        heart.style.fontSize = `${12 + Math.random() * 26}px`;
-        heart.style.animationDuration = `${7 + Math.random() * 10}s`;
-        heart.style.animationDelay = `${Math.random() * 6}s`;
-        heart.style.opacity = (0.15 + Math.random() * 0.3).toFixed(2);
-        bgHearts.appendChild(heart);
-      }
-    }
-
-    createFloatingHearts();
-
     const titleEl = document.getElementById("title");
     const subtitleEl = document.getElementById("subtitle");
-
-    let typingToken = 0;
-
-    function typeText(element, text, speed = 30) {
-      return new Promise((resolve) => {
-        let i = 0;
-        const token = ++typingToken;
-        element.textContent = "";
-
-        function step() {
-          if (token !== typingToken) return;
-
-          if (i < text.length) {
-            element.textContent += text.charAt(i);
-            i++;
-            setTimeout(step, speed);
-          } else {
-            resolve();
-          }
-        }
-
-        step();
-      });
-    }
-
-    async function renderMessage(index) {
-      const msg = messages[index];
-
-      titleEl.classList.add("typing-caret");
-      subtitleEl.textContent = "";
-
-      await typeText(titleEl, msg.title, 34);
-
-      titleEl.classList.remove("typing-caret");
-
-      const words = msg.subtitle.split(" ");
-      let built = "";
-
-      for (let i = 0; i < words.length; i++) {
-        built += (i ? " " : "") + words[i];
-        subtitleEl.textContent = built;
-        await new Promise(r => setTimeout(r, 28));
-      }
-    }
+    const kickerEl = document.getElementById("kicker");
+    const messageBox = document.getElementById("messageBox");
+    const nextBtn = document.getElementById("nextBtn");
+    const heartBtn = document.getElementById("heartBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const toast = document.getElementById("toast");
 
     const canvas = document.getElementById("particleCanvas");
     const ctx = canvas.getContext("2d");
 
+    pillName.textContent = `Only for ${recipientName}`;
+
+    let messageIndex = 0;
     let width = 0;
     let height = 0;
     let particles = [];
-    let targetPoints = [];
-    let animationTime = 0;
+    let targets = [];
+    let time = 0;
+    let typingRun = 0;
 
     const PARTICLE_GAP = 7;
-    const MAX_PARTICLES = 1600;
+    const MAX_PARTICLES = 2100;
+
+    function createBackground() {
+      const icons = ["♡", "♥", "✦", "✧"];
+      const count = Math.min(46, Math.max(24, Math.floor(window.innerWidth / 32)));
+
+      bgHearts.innerHTML = "";
+
+      for (let i = 0; i < count; i++) {
+        const span = document.createElement("span");
+        span.textContent = icons[Math.floor(Math.random() * icons.length)];
+        span.style.left = `${Math.random() * 100}vw`;
+        span.style.fontSize = `${11 + Math.random() * 28}px`;
+        span.style.animationDuration = `${8 + Math.random() * 13}s`;
+        span.style.animationDelay = `${Math.random() * 9}s`;
+        bgHearts.appendChild(span);
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function type(element, text, speed = 18) {
+      const run = ++typingRun;
+      element.textContent = "";
+      element.classList.add("typing");
+
+      for (let i = 0; i < text.length; i++) {
+        if (run !== typingRun) return;
+        element.textContent += text[i];
+        await sleep(speed);
+      }
+
+      element.classList.remove("typing");
+    }
+
+    async function renderMessage(index) {
+      const item = messages[index];
+      kickerEl.textContent = item.kicker;
+      subtitleEl.textContent = "";
+      messageBox.style.opacity = "0.35";
+      messageBox.style.transform = "translateY(8px)";
+
+      await type(titleEl, item.title, 16);
+      subtitleEl.textContent = item.subtitle;
+      messageBox.innerHTML = `<strong>Read this slowly:</strong><br />${item.box}`;
+
+      requestAnimationFrame(() => {
+        messageBox.style.transition = "260ms ease";
+        messageBox.style.opacity = "1";
+        messageBox.style.transform = "translateY(0)";
+      });
+    }
 
     function resizeCanvas() {
       const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
 
-      width = Math.floor(rect.width * devicePixelRatio);
-      height = Math.floor(rect.height * devicePixelRatio);
+      canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+      canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
 
-      canvas.width = width;
-      canvas.height = height;
-      canvas.style.width = rect.width + "px";
-      canvas.style.height = rect.height + "px";
-
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(devicePixelRatio, devicePixelRatio);
-
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       width = rect.width;
       height = rect.height;
 
-      updateTargetFromShape(shapes[currentShapeIndex], true);
+      setTarget(messages[messageIndex].symbol, true);
     }
 
-    function getPointsFromSymbol(symbol) {
+    function symbolPoints(symbol) {
       const off = document.createElement("canvas");
       const octx = off.getContext("2d");
 
       off.width = Math.max(1, Math.floor(width));
       off.height = Math.max(1, Math.floor(height));
 
-      octx.clearRect(0, 0, off.width, off.height);
+      const fontSize = Math.min(width, height) * 0.62;
 
-      const fontSize = Math.min(width, height) * 0.56;
-      octx.fillStyle = "#ffffff";
+      octx.clearRect(0, 0, off.width, off.height);
+      octx.fillStyle = "#fff";
       octx.textAlign = "center";
       octx.textBaseline = "middle";
-      octx.font = `700 ${fontSize}px Arial`;
-      octx.fillText(symbol, off.width / 2, off.height / 2 - off.height * 0.05);
+      octx.font = `950 ${fontSize}px Arial`;
+      octx.fillText(symbol, off.width / 2, off.height / 2 - off.height * 0.02);
 
-      const img = octx.getImageData(0, 0, off.width, off.height).data;
+      const data = octx.getImageData(0, 0, off.width, off.height).data;
       const points = [];
 
       for (let y = 0; y < off.height; y += PARTICLE_GAP) {
         for (let x = 0; x < off.width; x += PARTICLE_GAP) {
-          const alpha = img[(y * off.width + x) * 4 + 3];
-
-          if (alpha > 120) {
-            points.push({ x, y });
-          }
+          const alpha = data[(y * off.width + x) * 4 + 3];
+          if (alpha > 120) points.push({ x, y });
         }
       }
 
       return points.slice(0, MAX_PARTICLES);
     }
 
-    function seedParticle(tx, ty) {
+    function makeParticle(tx, ty) {
       const angle = Math.random() * Math.PI * 2;
-      const radius = Math.random() * Math.min(width, height) * 0.18;
-
+      const radius = Math.random() * Math.min(width, height) * 0.42;
       return {
         x: width / 2 + Math.cos(angle) * radius,
         y: height / 2 + Math.sin(angle) * radius,
         tx,
         ty,
-        size: Math.random() * 1.8 + 1.2,
-        ease: Math.random() * 0.055 + 0.045
+        size: 1.15 + Math.random() * 1.9,
+        ease: 0.045 + Math.random() * 0.06,
+        phase: Math.random() * Math.PI * 2
       };
     }
 
-    function updateTargetFromShape(symbol, immediate = false) {
-      targetPoints = getPointsFromSymbol(symbol);
+    function setTarget(symbol, instant = false) {
+      targets = symbolPoints(symbol);
 
-      if (immediate || particles.length === 0) {
-        particles = targetPoints.map(p => seedParticle(p.x, p.y));
+      if (instant || particles.length === 0) {
+        particles = targets.map(p => makeParticle(p.x, p.y));
         return;
       }
 
-      if (particles.length < targetPoints.length) {
-        while (particles.length < targetPoints.length) {
-          const p = targetPoints[particles.length];
-          particles.push(seedParticle(p.x, p.y));
-        }
-      } else if (particles.length > targetPoints.length) {
-        particles.length = targetPoints.length;
+      while (particles.length < targets.length) {
+        const point = targets[particles.length];
+        particles.push(makeParticle(point.x, point.y));
       }
 
-      for (let i = 0; i < targetPoints.length; i++) {
-        particles[i].tx = targetPoints[i].x;
-        particles[i].ty = targetPoints[i].y;
+      if (particles.length > targets.length) particles.length = targets.length;
+
+      for (let i = 0; i < targets.length; i++) {
+        particles[i].tx = targets[i].x;
+        particles[i].ty = targets[i].y;
       }
     }
 
-    function drawAmbientStars() {
-      for (let i = 0; i < 42; i++) {
-        const x = ((i * 91) + Math.sin(animationTime * 0.010 + i) * 20 + width) % width;
-        const y = ((i * 57) + Math.cos(animationTime * 0.008 + i) * 18 + height) % height;
+    function drawAura() {
+      const x = width / 2;
+      const y = height / 2;
+      const r = Math.min(width, height) * (0.25 + Math.sin(time * 0.025) * 0.01);
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
 
-        ctx.beginPath();
-        ctx.fillStyle = "rgba(255, 205, 232, 0.42)";
-        ctx.shadowColor = "rgba(255, 120, 204, 0.8)";
-        ctx.shadowBlur = 9;
-        ctx.arc(x, y, 1.1, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    function drawCenterGlow() {
-      const gx = width / 2;
-      const gy = height / 2 - height * 0.05;
-      const r = Math.min(width, height) * 0.18 * (1 + Math.sin(animationTime * 0.025) * 0.035);
-
-      const gradient = ctx.createRadialGradient(gx, gy, 0, gx, gy, r);
-
-      gradient.addColorStop(0, "rgba(255, 120, 210, 0.22)");
-      gradient.addColorStop(0.45, "rgba(255, 120, 210, 0.08)");
-      gradient.addColorStop(1, "rgba(255, 120, 210, 0)");
+      gradient.addColorStop(0, "rgba(255, 116, 205, 0.24)");
+      gradient.addColorStop(0.55, "rgba(255, 116, 205, 0.08)");
+      gradient.addColorStop(1, "rgba(255, 116, 205, 0)");
 
       ctx.fillStyle = gradient;
       ctx.beginPath();
-      ctx.arc(gx, gy, r, 0, Math.PI * 2);
+      ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
     }
 
+    function drawStars() {
+      ctx.save();
+      for (let i = 0; i < 70; i++) {
+        const x = ((i * 79) + Math.sin(time * 0.011 + i) * 22 + width) % width;
+        const y = ((i * 53) + Math.cos(time * 0.008 + i) * 18 + height) % height;
+        const a = 0.22 + Math.sin(time * 0.035 + i) * 0.16;
+
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255, 228, 246, ${Math.max(0.1, a)})`;
+        ctx.shadowColor = "rgba(255, 126, 210, 0.75)";
+        ctx.shadowBlur = 8;
+        ctx.arc(x, y, 1.05, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
     function animate() {
-      animationTime++;
-
+      time++;
       ctx.clearRect(0, 0, width, height);
+      drawAura();
+      drawStars();
 
-      drawCenterGlow();
-      drawAmbientStars();
-
+      ctx.save();
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-
         p.x += (p.tx - p.x) * p.ease;
         p.y += (p.ty - p.y) * p.ease;
 
-        const flicker = 0.82 + Math.sin(animationTime * 0.07 + i * 0.35) * 0.18;
-        const size = p.size * flicker;
-
+        const pulse = 0.84 + Math.sin(time * 0.07 + p.phase) * 0.16;
         ctx.beginPath();
-        ctx.fillStyle = "#ff96da";
-        ctx.shadowColor = "#ff63c2";
-        ctx.shadowBlur = 16;
-        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+        ctx.fillStyle = "#ff9add";
+        ctx.shadowColor = "#ff4fba";
+        ctx.shadowBlur = 15;
+        ctx.arc(p.x, p.y, p.size * pulse, 0, Math.PI * 2);
         ctx.fill();
       }
+      ctx.restore();
 
       requestAnimationFrame(animate);
     }
 
-    const nextMessageBtn = document.getElementById("nextMessageBtn");
-    const changeShapeBtn = document.getElementById("changeShapeBtn");
+    function burst(x, y) {
+      const icons = ["♡", "♥", "✦", "✧"];
+      for (let i = 0; i < 22; i++) {
+        const span = document.createElement("span");
+        span.className = "burst";
+        span.textContent = icons[Math.floor(Math.random() * icons.length)];
+        span.style.left = `${x}px`;
+        span.style.top = `${y}px`;
+        span.style.fontSize = `${17 + Math.random() * 15}px`;
 
-    nextMessageBtn.addEventListener("click", () => {
-      currentMessageIndex = (currentMessageIndex + 1) % messages.length;
-      currentShapeIndex = (currentShapeIndex + 1) % shapes.length;
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 70 + Math.random() * 100;
+        span.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+        span.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
 
-      updateTargetFromShape(shapes[currentShapeIndex]);
-      renderMessage(currentMessageIndex);
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 900);
+      }
+    }
+
+    function showToast(text) {
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+
+    nextBtn.addEventListener("click", () => {
+      messageIndex = (messageIndex + 1) % messages.length;
+      setTarget(messages[messageIndex].symbol);
+      renderMessage(messageIndex);
     });
 
-    changeShapeBtn.addEventListener("click", () => {
-      currentShapeIndex = (currentShapeIndex + 1) % shapes.length;
-      updateTargetFromShape(shapes[currentShapeIndex]);
+    heartBtn.addEventListener("click", event => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      burst(rect.left + rect.width / 2, rect.top + rect.height / 2);
     });
 
-    window.addEventListener("resize", resizeCanvas);
+    copyBtn.addEventListener("click", async () => {
+      const item = messages[messageIndex];
+      const text = `${item.title}\n\n${item.subtitle}\n\n${item.box}`;
 
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Message copied 💗");
+      } catch {
+        showToast("Copy failed");
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      createBackground();
+    });
+
+    createBackground();
     resizeCanvas();
-    renderMessage(currentMessageIndex);
+    renderMessage(messageIndex);
     animate();
   </script>
 </body>
